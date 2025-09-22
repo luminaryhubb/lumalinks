@@ -7,9 +7,9 @@ export default function App() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg flex flex-col items-center">
-          <h2 className="text-xl mb-4">Site 1</h2>
+          <h2 className="text-xl mb-4">Splunk - Luma Methods</h2>
           <a
-            href="https://example.com"
+            href="https://app.splunk.gg/"
             target="_blank"
             className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition"
           >
@@ -18,9 +18,9 @@ export default function App() {
         </div>
 
         <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg flex flex-col items-center">
-          <h2 className="text-xl mb-4">Site 2</h2>
+          <h2 className="text-xl mb-4">Shockfy - Luma Methods</h2>
           <a
-            href="https://example.org"
+            href="https://shockify.st/dashboard"
             target="_blank"
             className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition"
           >
@@ -29,9 +29,9 @@ export default function App() {
         </div>
 
         <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg flex flex-col items-center">
-          <h2 className="text-xl mb-4">Site 3</h2>
+          <h2 className="text-xl mb-4">Immortal - Luma Methods</h2>
           <a
-            href="https://example.net"
+            href="https://immortal.st/"
             target="_blank"
             className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition"
           >
