@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luma Methods V2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      color: white;
+      font-family: sans-serif;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    /* Spotlight card */
+    .spotlight-card {
+      position: relative;
+      border-radius: 1.5rem; /* rounded-3xl */
+      border: 1px solid #262626; /* border-neutral-800 */
+      background-color: #171717; /* bg-neutral-900 */
+      overflow: hidden;
+      padding: 2rem; /* p-8 */
+    }
+    .spotlight-overlay {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <canvas id="glitch"></canvas>
+
+  <!-- Spotlight Card Container -->
+  <div class="relative z-10 flex items-center justify-center h-screen">
+    <div class="spotlight-card max-w-xl w-full mx-4 text-center" id="spotlight">
+      <div class="spotlight-overlay" id="spotlight-overlay"></div>
+
+      <h1 class="text-4xl md:text-6xl font-bold text-purple-400 drop-shadow-lg">
+        Luma Methods V2
+      </h1>
+      <p class="mt-4 text-lg md:text-2xl text-gray-200">
+        Está preparado para o lançamento?
+      </p>
+
+      <!-- Countdown -->
+      <div id="countdown" class="mt-8 grid grid-cols-4 gap-4 text-center">
+        <div class="bg-black/40 backdrop-blur-md p-4 rounded-2xl shadow-lg">
+          <p id="days" class="text-3xl font-bold text-purple-300">0</p>
+          <span class="text-sm">Dias</span>
+        </div>
+        <div class="bg-black/40 backdrop-blur-md p-4 rounded-2xl shadow-lg">
+          <p id="hours" class="text-3xl font-bold text-purple-300">0</p>
+          <span class="text-sm">Horas</span>
+        </div>
+        <div class="bg-black/40 backdrop-blur-md p-4 rounded-2xl shadow-lg">
+          <p id="minutes" class="text-3xl font-bold text-purple-300">0</p>
+          <span class="text-sm">Minutos</span>
+        </div>
+        <div class="bg-black/40 backdrop-blur-md p-4 rounded-2xl shadow-lg">
+          <p id="seconds" class="text-3xl font-bold text-purple-300">0</p>
+          <span class="text-sm">Segundos</span>
+        </div>
+      </div>
+
+      <!-- Botão Discord -->
+      <a
+        href="https://discord.gg/v2JdwRZktC"
+        target="_blank"
+        class="mt-10 inline-block px-6 py-3 rounded-2xl bg-purple-700 hover:bg-purple-900 transition shadow-lg text-lg font-semibold"
+      >
+        Discord
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ---------------- COUNTDOWN ----------------
+    const targetDate = new Date("2025-09-28T19:30:00");
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / 1000 / 60) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      document.getElementById("days").innerText = days;
+      document.getElementById("hours").innerText = hours;
+      document.getElementById("minutes").innerText = minutes;
+      document.getElementById("seconds").innerText = seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // ---------------- LETTER GLITCH ----------------
+    const canvas = document.getElementById("glitch");
+    const ctx = canvas.getContext("2d");
+
+    const glitchColors = ["#6b21a8", "#9333ea", "#c084fc"];
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789";
+    const fontSize = 20;
+    const charWidth = 12;
+    const charHeight = 22;
+    let letters = [];
+    let grid = { columns: 0, rows: 0 };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      grid.columns = Math.ceil(canvas.width / charWidth);
+      grid.rows = Math.ceil(canvas.height / charHeight);
+      letters = Array.from({ length: grid.columns * grid.rows }, () => ({
+        char: randomChar(),
+        color: randomColor(),
+      }));
+    }
+
+    function randomChar() {
+      return characters[Math.floor(Math.random() * characters.length)];
+    }
+
+    function randomColor() {
+      return glitchColors[Math.floor(Math.random() * glitchColors.length)];
+    }
+
+    function drawLetters() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = `${fontSize}px monospace`;
+      ctx.textBaseline = "top";
+      letters.forEach((letter, i) => {
+        const x = (i % grid.columns) * charWidth;
+        const y = Math.floor(i / grid.columns) * charHeight;
+        ctx.fillStyle = letter.color;
+        ctx.fillText(letter.char, x, y);
+      });
+    }
+
+    function updateLetters() {
+      const updates = Math.max(1, Math.floor(letters.length * 0.05));
+      for (let i = 0; i < updates; i++) {
+        const index = Math.floor(Math.random() * letters.length);
+        letters[index].char = randomChar();
+        letters[index].color = randomColor();
+      }
+    }
+
+    function animate() {
+      updateLetters();
+      drawLetters();
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    animate();
+
+    // ---------------- SPOTLIGHT EFFECT ----------------
+    const spotlight = document.getElementById("spotlight");
+    const overlay = document.getElementById("spotlight-overlay");
+
+    spotlight.addEventListener("mousemove", (e) => {
+      const rect = spotlight.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      overlay.style.opacity = 0.6;
+      overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(147,51,234,0.35), transparent 80%)`;
+    });
+
+    spotlight.addEventListener("mouseleave", () => {
+      overlay.style.opacity = 0;
+    });
+  </script>
+</body>
+</html>
